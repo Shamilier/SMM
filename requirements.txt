@@ -1,8 +1,5 @@
 aiogram
 instagrapi
 asyncio
-time
-random
 datetime
-logging
 mysql.connector
