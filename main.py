@@ -10,13 +10,17 @@ from db import Database
 
 
 
-
 API_TOKEN = '7428146964:AAHLkbopN-1NBwmJ2SMlcTP65i4kpBpzU6c'
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 dp.middleware.setup(LoggingMiddleware())
 
 db = Database(connection=connection)
+
+
+
+
+
 
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):

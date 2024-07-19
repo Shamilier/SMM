@@ -1,0 +1,17 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "monorail.proxy.rlwy.net",
+            "port": 31655,
+            "driver": "MySQL",
+            "name": "SMM",
+            "database": "railway",
+            "username": "root"
+        }
+    ]
+}
