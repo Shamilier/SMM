@@ -1,5 +1,5 @@
 aiogram==2.23.1
-instagrapi
+instagrapi==2.1.2
 asyncio
 datetime
 mysql.connector
