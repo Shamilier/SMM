@@ -24,7 +24,7 @@ def get_prev_followers(username, password, delay = 5):
         
         if not last_max_id:  # Конец списка, все подписчики загружены
             print("Все текущие подписчики получены.")
-            return previous_followers
+            return previous_followers, user_id
         else:
             print("Загрузка подписчиков...")
             time.sleep(3)

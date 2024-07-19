@@ -127,8 +127,8 @@ async def subscribers_checker(call: CallbackQuery):
     res = db.get_username_password(user_id)
     print(res['username'], res['password'])
     username, password = res['username'], res['password']
-    followers = get_prev_followers(username, password)
-    db.update_followers(followers)
+    followers, inst_user_id = get_prev_followers(username, password)
+    db.update_followers(user_id, followers)
     
 
 
