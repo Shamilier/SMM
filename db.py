@@ -60,7 +60,7 @@ class Database:
         return False
 # ----------
     def get_username_password(self, user_id):
-        query = "SELECT username, password FROM inst_accounts WHERE user_id = %s"
+        query = "SELECT username, password, inst_acc_id FROM inst_accounts WHERE user_id = %s"
         self.cursor.execute(query, (user_id,))
         result = self.cursor.fetchone()
         return result
