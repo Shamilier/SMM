@@ -26,7 +26,7 @@ class Database:
         '''
         query = """
             INSERT IGNORE INTO inst_accounts (user_id, username, password, inst_acc_id) 
-            VALUES (%s, %s, %s);
+            VALUES (%s, %s, %s, %s);
         """      
         self.cursor.execute(query, (user_id, username, passw, inst_id))
         self.connection.commit()
