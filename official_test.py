@@ -28,8 +28,9 @@ def check_ins_acc(name, passw, user_id):
     try:
         client = Client()
         client.login(name, passw)
+        inst_id = client.user_id_from_username(name)
         
-        db.add_inst_account(name, passw, user_id)
+        db.add_inst_account(name, passw, user_id, inst_id)
         return "success"
     except Exception as e:
         print(e)
@@ -125,9 +126,9 @@ async def subscribers_checker(call: CallbackQuery):
     await call.message.answer("Происходит загрузка подписчиков пожалуйста ждите")
     user_id = call.from_user.id
     res = db.get_username_password(user_id)
-    print(res['username'], res['password'])
-    username, password = res['username'], res['password']
-    followers, inst_user_id = get_prev_followers(username, password)
+    print(res['username'], res['password'], res['inst_acc_id'])
+    username, password, inst_acc_id = res['username'], res['password'], res['inst_acc_id']
+    followers, inst_user_id = get_prev_followers(username, password, inst_acc_id)
     db.update_followers(user_id, followers)
     
 

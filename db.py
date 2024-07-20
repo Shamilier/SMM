@@ -20,15 +20,15 @@ class Database:
         
 # ----------
     
-    def add_inst_account(self, username, passw, user_id):        
+    def add_inst_account(self, username, passw, user_id, inst_id):        
         '''
         Добавлет данные аккаунта инстаграмм в таблицу inst_accounts
         '''
         query = """
-            INSERT IGNORE INTO inst_accounts (user_id, username, password) 
+            INSERT IGNORE INTO inst_accounts (user_id, username, password, inst_acc_id) 
             VALUES (%s, %s, %s);
         """      
-        self.cursor.execute(query, (user_id, username, passw))
+        self.cursor.execute(query, (user_id, username, passw, inst_id))
         self.connection.commit()
 # ----------
     def print_all_users(self):

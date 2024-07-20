@@ -4,13 +4,11 @@ import random
 from instagrapi import Client
 
 
-def get_prev_followers(username, password, delay = 5):
+def get_prev_followers(username, password, inst_acc_id, delay = 5):
     print(1)
     cl = Client()
     cl.login(username, password)
     print(2)
-    user_id = cl.user_id_from_username(username)
-    print(3)
 
     # Сначала получаем всех текущих подписчиков
     previous_followers = set()
@@ -18,13 +16,13 @@ def get_prev_followers(username, password, delay = 5):
 
     while True:
         print("Новый цикл")
-        new_followers, last_max_id = cl.user_followers_v1_chunk(user_id, max_amount=50, max_id=last_max_id)
+        new_followers, last_max_id = cl.user_followers_v1_chunk(inst_acc_id, max_amount=50, max_id=last_max_id)
         current_followers = {(follower.pk, follower.username) for follower in new_followers}
         previous_followers.update(current_followers)
         
         if not last_max_id:  # Конец списка, все подписчики загружены
             print("Все текущие подписчики получены.")
-            return previous_followers, user_id
+            return previous_followers, inst_acc_id
         else:
             print("Загрузка подписчиков...")
             time.sleep(3)
@@ -38,7 +36,7 @@ def monitor_new_followers(username, password, delay=420):
 
     try:
         while True:
-            new_followers, last_max_id = cl.user_followers_v1_chunk(user_id, max_amount=50, max_id=last_max_id)
+            new_followers, last_max_id = cl.user_followers_v1_chunk(inst_acc_id, max_amount=50, max_id=last_max_id)
             current_followers = {(follower.pk, follower.username) for follower in new_followers}
             previous_followers.update(current_followers)
             
@@ -60,7 +58,7 @@ def monitor_new_followers(username, password, delay=420):
         
 def tryy(username, password):
     cl = Client(username, password)
-    user_id = cl.user_id_from_username(username)
+    inst_acc_id = cl.inst_acc_id_from_username(username)
     
 
 # if __name__ == "__main__":
