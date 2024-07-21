@@ -12,7 +12,7 @@ from key_words_in_DM import monitor_direct_messages, keywords
 from connection_db import connection
 from db import Database
 from secret import API_TOKEN
-from check_followers import  get_prev_followers
+from check_followers import  get_prev_followers, monitor_new_followers
 
 
 bot = Bot(token=API_TOKEN)
@@ -50,18 +50,24 @@ def get_account_action_keyboard():
     return keyboard
 
 
-async def periodic_subscriber_check():
+async def periodic_followers_check():
     while True:
         # Ждем 8 минут (480 секунд)
         await asyncio.sleep(480)
         
         # Вызываем вашу функцию проверки подписчиков для всех нужных пользователей
         # Предполагаем, что функция subscribers_checking обрабатывает всех пользователей
-        await subscribers_checking()
+        await followers_checking()
         
         
-async def subscribers_checking():
-    pass
+async def followers_checking():
+    res = db.get_followers_check_list()
+    for i in res:
+        prev_followers = db.get_prev_followers(res['user_id'])
+        print(prev_followers)
+        # monitor_new_followers(res)
+    
+
 
 
 
@@ -70,6 +76,7 @@ class Form(StatesGroup):
     waiting_for_instagram_username = State()
     waiting_for_instagram_password = State()
     account_added = State()
+    waiting_for_greetning = State()
     
 @dp.message_handler(commands='accounts')
 async def accs(message: types.Message):
@@ -130,6 +137,18 @@ async def subscribers_checker(call: CallbackQuery):
     username, password, inst_acc_id = res['username'], res['password'], res['inst_acc_id']
     followers, inst_user_id = get_prev_followers(username, password, inst_acc_id)
     db.update_followers(user_id, followers)
+    await bot.send_message(user_id, f"У вас обнаружено {len(followers)} подписчиков. Теперь раз в 8 минут будет происходить мониторинг новых подписчиков. Вы можете отправлять каждому новому подписчику приветственное сообщение. Введите это сообщение слудующим сообщением. Если приветстовать не нужно, отправьте цифру 0. Что бы отключить функцию мониторинга отправьте команду /stop_followers")
+    await Form.waiting_for_greetning.set()
+
+
+@dp.message_handler(state=Form.waiting_for_greetning)
+async def greetning_recieve(message: types.Message, state: FSMContext):
+    status = message.text
+    db.set_followers_checker(status, message.from_user.id)
+    await bot.send_message(message.from_user.id, "Успешно добавлено!")
+    await state.finish()
+
+    
     
 
 

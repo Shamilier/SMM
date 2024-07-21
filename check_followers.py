@@ -1,4 +1,3 @@
-
 import time
 import random
 from instagrapi import Client
@@ -9,6 +8,7 @@ def get_prev_followers(username, password, inst_acc_id, delay = 5):
     cl = Client()
     cl.login(username, password)
     print(2)
+    cl.sessionid
 
     # Сначала получаем всех текущих подписчиков
     previous_followers = set()
@@ -28,7 +28,9 @@ def get_prev_followers(username, password, inst_acc_id, delay = 5):
             time.sleep(3)
             
 
-def monitor_new_followers(username, password, delay=420):
+def monitor_new_followers(res, prev_followers):
+    cl = Client()
+    cl.login(res['username'], res['password'])
 
     # Сначала получаем всех текущих подписчиков
     previous_followers = set()
@@ -42,7 +44,7 @@ def monitor_new_followers(username, password, delay=420):
             
             if not last_max_id:  # Конец списка, все подписчики загружены
                 print("Все текущие подписчики получены.")
-                return previous_followers
+                break
             else:
                 print("Загрузка подписчиков...")
                 time.sleep(3)
@@ -56,11 +58,3 @@ def monitor_new_followers(username, password, delay=420):
         print(f"Произошла ошибка: {e}")
         time.sleep(300)
         
-def tryy(username, password):
-    cl = Client(username, password)
-    inst_acc_id = cl.inst_acc_id_from_username(username)
-    
-
-# if __name__ == "__main__":
-#     print('hello')
-#     monitor_new_followers('Shamilier', "Shamil2004!")

@@ -16,10 +16,8 @@ class Database:
         if self.cursor.rowcount > 0:
             print("Новый пользователь был успешно добавлен.")
         else:
-            print("Пользователь уже существует.")
-        
+            print("Пользователь уже существует.")   
 # ----------
-    
     def add_inst_account(self, username, passw, user_id, inst_id):        
         '''
         Добавлет данные аккаунта инстаграмм в таблицу inst_accounts
@@ -75,6 +73,22 @@ class Database:
                 username = VALUES(username), checked = CURRENT_TIMESTAMP;
             """, (follower[0], follower[1], owner_id))
         self.connection.commit()
-
+# ----------
+    def set_followers_checker(self, status, user_id):
+        query = 'UPDATE inst_accounts SET followers_checker = %s AND geetning = %s WHERE user_id = %s'
+        self.cursor.execute(query, (1, status, user_id,))
+        self.connection.commit()
+# ----------
+    def get_followers_check_list(self):
+        query = 'SELECT * FROM inst_accounts WHERE followers_checker = %s'
+        self.cursor.execute(query, (1,))
+        result = self.cursor.fetchall()
+        return result
+# ----------
+    def get_prev_followers(self, user_id):
+        query = "SELECT * FROM followers WHERE owner_id = %s"
+        self.cursor.execute(query, (user_id,))
+        result = self.cursor.fetchall()
+        return result
         
         
