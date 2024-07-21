@@ -12,9 +12,9 @@ def get_prev_followers(username, password, inst_acc_id, delay = 5):
 
     # Сначала получаем всех текущих подписчиков
     previous_followers = set()
-    last_max_id = ""
+    last_max_id = "0"
 
-    while True:
+    while last_max_id:
         print("Новый цикл")
         new_followers, last_max_id = cl.user_followers_v1_chunk(inst_acc_id, max_amount=50, max_id=last_max_id)
         current_followers = {(follower.pk, follower.username) for follower in new_followers}

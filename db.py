@@ -75,7 +75,7 @@ class Database:
         self.connection.commit()
 # ----------
     def set_followers_checker(self, status, user_id):
-        query = 'UPDATE inst_accounts SET followers_checker = %s AND geetning = %s WHERE user_id = %s'
+        query = 'UPDATE inst_accounts SET followers_checker = %s AND greetning = %s WHERE user_id = %s'
         self.cursor.execute(query, (1, status, user_id,))
         self.connection.commit()
 # ----------
