@@ -64,14 +64,14 @@ class Database:
         return result
 # ----------
     def update_followers(self, owner_id, current_followers):
-        for follower in current_followers:
+        for follower_id, other in current_followers.items():
             # Добавляем owner_id в запрос и обновляем запрос для учёта этого параметра
             self.cursor.execute("""
                 INSERT INTO followers (user_id, username, owner_id)
                 VALUES (%s, %s, %s)
                 ON DUPLICATE KEY UPDATE
                 username = VALUES(username), checked = CURRENT_TIMESTAMP;
-            """, (follower[0], follower[1], owner_id))
+            """, (follower_id, other.username, owner_id))
         self.connection.commit()
 # ----------
     def set_followers_checker(self, status, user_id):

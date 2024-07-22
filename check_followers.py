@@ -8,24 +8,9 @@ def get_prev_followers(username, password, inst_acc_id, delay = 5):
     cl = Client()
     cl.login(username, password)
     print(2)
-    cl.sessionid
 
-    # Сначала получаем всех текущих подписчиков
-    previous_followers = set()
-    last_max_id = "0"
-
-    while last_max_id:
-        print("Новый цикл")
-        new_followers, last_max_id = cl.user_followers_v1_chunk(inst_acc_id, max_amount=50, max_id=last_max_id)
-        current_followers = {(follower.pk, follower.username) for follower in new_followers}
-        previous_followers.update(current_followers)
-        
-        if not last_max_id:  # Конец списка, все подписчики загружены
-            print("Все текущие подписчики получены.")
-            return previous_followers, inst_acc_id
-        else:
-            print("Загрузка подписчиков...")
-            time.sleep(3)
+    followers = cl.user_followers(int(inst_acc_id))
+    return followers
             
 
 def monitor_new_followers(res, prev_followers):
