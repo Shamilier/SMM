@@ -180,7 +180,7 @@ async def get_followers3(message: types.Message, state:FSMContext):
         output = io.StringIO()
         writer = csv.writer(output)
         writer.writerow(['Username', 'Full Name'])  # Заголовки столбцов
-        for id, follower in followers:
+        for id, follower in followers.items():
             writer.writerow([follower.username, follower.full_name])  # Данные подписчиков
         output.seek(0)  # Возвращаем указатель в начало файла
         # Преобразуем StringIO в BytesIO для отправки через Telegram
