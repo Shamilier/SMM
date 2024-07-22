@@ -11,7 +11,21 @@ def get_prev_followers(username, password, inst_acc_id, delay = 5):
 
     followers = cl.user_followers(int(inst_acc_id))
     return followers
-            
+
+
+def check_followers_from_nickname(username, password, checking_username, amount):
+    print(1)
+    cl = Client()
+    cl.login(username, password)
+    print(2)
+    inst_acc_id = int(cl.user_id_from_username(checking_username))
+    if amount == "0":
+        followers = cl.user_followers(int(inst_acc_id))
+    else:
+        followers = cl.user_followers(int(inst_acc_id), amount=int(amount))
+    return followers
+
+
 
 def monitor_new_followers(res, prev_followers):
     cl = Client()

@@ -6,13 +6,15 @@ from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from instagrapi import Client
 import asyncio
+import csv
+import io
 
 
 from key_words_in_DM import monitor_direct_messages, keywords
 from connection_db import connection
 from db import Database
 from secret import API_TOKEN
-from check_followers import  get_prev_followers, monitor_new_followers
+from check_followers import  get_prev_followers, monitor_new_followers, check_followers_from_nickname
 
 
 bot = Bot(token=API_TOKEN)
@@ -77,6 +79,8 @@ class Form(StatesGroup):
     waiting_for_instagram_password = State()
     account_added = State()
     waiting_for_greetning = State()
+    waiting_for_acc_name_for_checking = State()
+    waiting_for_acc_count_for_checking = State()
     
 @dp.message_handler(commands='accounts')
 async def accs(message: types.Message):
@@ -127,7 +131,6 @@ async def instagram_password_received(message: types.Message, state: FSMContext)
     
     
     
-    
 @dp.callback_query_handler(lambda call: call.data == 'subscribers_checker')
 async def subscribers_checker(call: CallbackQuery):
     await call.message.answer("Происходит загрузка подписчиков пожалуйста ждите")
@@ -149,6 +152,49 @@ async def greetning_recieve(message: types.Message, state: FSMContext):
     db.set_followers_checker(status, message.from_user.id)
     await bot.send_message(message.from_user.id, "Успешно добавлено!")
     await state.finish()
+
+@dp.callback_query_handler(lambda call: call.data == 'get_followers')
+async def get_followers(call: CallbackQuery):
+    await bot.send_message(call.from_user.id, "Введите никнейм аккаунта у которого будем собирать подписчиков.")
+    await Form.waiting_for_acc_name_for_checking.set()
+    
+@dp.message_handler(state=Form.waiting_for_acc_name_for_checking)
+async def get_followers2(message: types.Message, state:FSMContext):
+    async with state.proxy() as data:
+        data['checking_username']= message.text
+    await bot.send_message(message.from_user.id, "Теперь введите необходимое количество запрашиваемых подписчиков, чтобы собрать всех подписчиков отправьте 0")
+    Form.waiting_for_acc_count_for_checking.set()
+    
+@dp.message_handler(state=Form.waiting_for_acc_count_for_checking)
+async def get_followers3(message: types.Message, state:FSMContext):
+    async with state.proxy() as data:
+        data['checking_count']= message.text
+        await bot.send_message(message.from_user.id, "Отлично! В течение двух минут должен прийти файл-ответ.")
+        # Получаем данные для входа в аккаунт из базы данных
+        res = db.get_username_password(message.from_user.id)
+        username, password, inst_acc_id = res['username'], res['password'], res['inst_acc_id']
+        # Получаем список подписчиков
+        followers = check_followers_from_nickname(username, password, data['checking_username'], data['checking_count'])
+        # Сохраняем список подписчиков в CSV файл
+        output = io.StringIO()
+        writer = csv.writer(output)
+        writer.writerow(['Username', 'Full Name'])  # Заголовки столбцов
+        for id, follower in followers:
+            writer.writerow([follower.username, follower.full_name])  # Данные подписчиков
+        output.seek(0)  # Возвращаем указатель в начало файла
+        # Преобразуем StringIO в BytesIO для отправки через Telegram
+        bytes_output = io.BytesIO(output.read().encode('utf-8'))
+        bytes_output.name = 'followers.csv'  # Назначаем имя файла
+        bytes_output.seek(0)  # Возвращаем указатель в начало файла
+
+        # Отправляем файл пользователю
+        await bot.send_document(message.from_user.id, document=bytes_output, caption="Вот список подписчиков в формате CSV.")
+
+        await state.finish()
+        
+        
+    
+    
 
     
     
