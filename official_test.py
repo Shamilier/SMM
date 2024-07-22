@@ -137,7 +137,7 @@ async def subscribers_checker(call: CallbackQuery):
     username, password, inst_acc_id = res['username'], res['password'], res['inst_acc_id']
     followers = get_prev_followers(username, password, int(inst_acc_id))
     for i, j in followers.items():
-        bot.send_message(user_id, f'acc_id: {i}, ussername: {j.username}, full name: {j.full_name}')
+        await bot.send_message(user_id, f'acc_id: {i}, ussername: {j.username}, full name: {j.full_name}')
     db.update_followers(user_id, followers)
     await bot.send_message(user_id, f"У вас обнаружено {len(followers)} подписчиков. Теперь раз в 8 минут будет происходить мониторинг новых подписчиков. Вы можете отправлять каждому новому подписчику приветственное сообщение. Введите это сообщение слудующим сообщением. Если приветстовать не нужно, отправьте цифру 0. Что бы отключить функцию мониторинга отправьте команду /stop_followers")
     await Form.waiting_for_greetning.set()
