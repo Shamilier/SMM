@@ -46,6 +46,7 @@ def get_account_action_keyboard():
         InlineKeyboardButton(text="DM checker", callback_data="DM"),
         InlineKeyboardButton(text="Auto comment", callback_data="auto_comment"),
         InlineKeyboardButton(text="Subscribers checker", callback_data="subscribers_checker"),
+        InlineKeyboardButton(text="get_followers", callback_data="get_followers"),
         
     ]
     keyboard.add(*buttons)
