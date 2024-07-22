@@ -164,7 +164,7 @@ async def get_followers2(message: types.Message, state:FSMContext):
     async with state.proxy() as data:
         data['checking_username']= message.text
     await bot.send_message(message.from_user.id, "Теперь введите необходимое количество запрашиваемых подписчиков, чтобы собрать всех подписчиков отправьте 0")
-    Form.waiting_for_acc_count_for_checking.set()
+    await Form.waiting_for_acc_count_for_checking.set()
     
 @dp.message_handler(state=Form.waiting_for_acc_count_for_checking)
 async def get_followers3(message: types.Message, state:FSMContext):
