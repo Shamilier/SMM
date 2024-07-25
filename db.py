@@ -16,7 +16,8 @@ class Database:
         if self.cursor.rowcount > 0:
             print("Новый пользователь был успешно добавлен.")
         else:
-            print("Пользователь уже существует.")   
+            print("Пользователь уже существует.")  
+        self.cursor.close() 
 # ----------
     def add_inst_account(self, username, passw, user_id, inst_id):        
         '''
@@ -28,6 +29,7 @@ class Database:
         """      
         self.cursor.execute(query, (user_id, username, passw, inst_id))
         self.connection.commit()
+        self.cursor.close()
 # ----------
     def print_all_users(self):
         '''
@@ -42,17 +44,21 @@ class Database:
                 print(user)  # Вывод информации о каждом пользователе
         else:
             print("Нет пользователей в базе данных.")
+        self.cursor.close()
 # ----------
     def get_int_accounts(self, user_id):
         query = "SELECT * FROM inst_accounts WHERE user_id = %s"
         self.cursor.execute(query, (user_id,))
         result = self.cursor.fetchall()
+        self.cursor.close()
         return result
+    
 # ----------
     def check_account(self, user_id, username):
         query = "SELECT * FROM inst_accounts WHERE username = %s AND user_id = %s"
         self.cursor.execute(query, (username, user_id))
         result = self.cursor.fetchall()
+        self.cursor.close()
         if len(result) > 0:
             return True
         return False
@@ -61,6 +67,7 @@ class Database:
         query = "SELECT username, password, inst_acc_id FROM inst_accounts WHERE user_id = %s"
         self.cursor.execute(query, (user_id,))
         result = self.cursor.fetchone()
+        self.cursor.close()
         return result
 # ----------
     def update_followers(self, owner_id, current_followers):
@@ -73,11 +80,13 @@ class Database:
                 username = VALUES(username), checked = CURRENT_TIMESTAMP;
             """, (follower_id, other.username, owner_id))
         self.connection.commit()
+        self.cursor.close()
 # ----------
     def set_followers_checker(self, status, user_id):
         query = 'UPDATE inst_accounts SET followers_checker = %s, greetning = %s WHERE user_id = %s'
         self.cursor.execute(query, (1, status, user_id))
         self.connection.commit()
+        self.cursor.close()
 
 # ----------
     def get_followers_check_list(self):
@@ -85,9 +94,11 @@ class Database:
         self.cursor.execute(query, (1,))
         try:
             result = self.cursor.fetchall()
+            self.cursor.close()
             return result
         except Exception as e:
             print(e, 'smth wrong get_followers_check_list, db')
+            self.cursor.close()
             return []
 # ----------
     def get_prev_followers(self, user_id):
@@ -95,15 +106,18 @@ class Database:
         self.cursor.execute(query, (user_id,))
         try:
             result = self.cursor.fetchall()
+            self.cursor.close()
             return result
         except Exception as e:
             print(e, 'smth wrong get_followers_check_list, db')
+            self.cursor.close()
             return []
 # ----------
     def update_comments_check(self, inst_acc_id, username, password, pattern, answer, pk):
         query = "INSERT INTO comments_check (inst_acc_id, username, password, pattern, answer, pk) VALUES (%s, %s, %s, %s, %s, %s)"
         self.cursor.execute(query, (inst_acc_id, username, password, pattern, answer, pk))
         self.connection.commit()
+        self.cursor.close()
         return
         
 # ---------
@@ -112,8 +126,10 @@ class Database:
         self.cursor.execute(query)
         try:
             result = self.cursor.fetchall()
+            self.cursor.close()
             return result
         except Exception as e:
             print(e, 'smth wrong get_followers_check_list, db')
+            self.cursor.close()
             return []
         
