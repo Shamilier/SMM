@@ -272,7 +272,7 @@ async def comments_checker4(message: types.Message, state:FSMContext):
         data['post_message'] = message.text
         db.update_comments_check(data['inst_acc_id'], data['username'], data['password'], data['pattern'], data['post_message'], data['post_pk'])
         await state.finish()
-        followers_checking()
+        await followers_checking()
         
 
 
