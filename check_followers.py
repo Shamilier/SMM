@@ -27,7 +27,7 @@ def check_followers_from_nickname(username, password, checking_username, amount)
 
 def check_comments(i: dict):
     cl = Client()
-    print(i)
+    print(i['username'], i['password'])
     try:
         cl.login(i['username'], i['password'])
         print(cl.media_info_a1(int(i['pk'])))
