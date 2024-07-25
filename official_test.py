@@ -62,6 +62,7 @@ async def periodic_comments_check():
         
         
 async def comments_checking():
+    print('зашел в функцию comments_checking')
     accs = db.get_comments_checking()
     for i in accs:
         check_comments(i)

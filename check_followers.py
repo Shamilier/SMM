@@ -26,10 +26,12 @@ def check_followers_from_nickname(username, password, checking_username, amount)
     return followers
 
 def check_comments(i: dict):
+    print('зашел в функцию check_comments')
     cl = Client()
     print(i['username'], i['password'])
     try:
         cl.login(i['username'].lower(), i['password'])
+        print('авторизовался ')
         print(cl.media_info(int(i['pk'])))
     except Exception as e:
         print(e)

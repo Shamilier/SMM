@@ -133,12 +133,14 @@ class Database:
         
 # ---------
     def get_comments_checking(self):
+        print('зашел в функцию get_comments_checking')
         self.cursor = self.connection.cursor(buffered=True, dictionary=True)
         query = "SELECT * FROM comments_check"
         self.cursor.execute(query)
         try:
             result = self.cursor.fetchall()
             self.cursor.close()
+            print('чзх')
             return result
         except Exception as e:
             print(e, 'smth wrong get_followers_check_list, db')
