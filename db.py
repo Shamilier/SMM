@@ -81,7 +81,7 @@ class Database:
 
 # ----------
     def get_followers_check_list(self):
-        query = 'SELECT * FROM comments_check'
+        query = 'SELECT * FROM inst_accounts WHERE followers_checker = %s'
         self.cursor.execute(query, (1,))
         result = self.cursor.fetchall()
         return result
@@ -100,8 +100,8 @@ class Database:
         
 # ---------
     def get_comments_checking(self):
-        query = "SELECT * FROM inst_accounts WHERE comments_checker = %s"
-        self.cursor.execute(query, (1,))
+        query = "SELECT * FROM comments_check"
+        self.cursor.execute(query)
         result = self.connection.fetchall()
         return result
         
