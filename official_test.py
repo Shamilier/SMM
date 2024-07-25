@@ -173,6 +173,7 @@ async def get_followers3(message: types.Message, state:FSMContext):
         await bot.send_message(message.from_user.id, "Отлично! В течение двух минут должен прийти файл-ответ.")
         # Получаем данные для входа в аккаунт из базы данных
         res = db.get_username_password(message.from_user.id)
+        print(res)
         username, password, inst_acc_id = res['username'], res['password'], res['inst_acc_id']
         # Получаем список подписчиков
         followers = check_followers_from_nickname(username, password, data['checking_username'], data['checking_count'])
