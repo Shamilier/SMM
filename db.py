@@ -102,7 +102,7 @@ class Database:
     def get_comments_checking(self):
         query = "SELECT * FROM comments_check"
         self.cursor.execute(query)
-        result = self.connection.fetchall()
+        result = self.cursor.fetchall()
         return result
         
         
