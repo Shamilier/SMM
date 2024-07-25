@@ -71,7 +71,16 @@ async def followers_checking():
         # monitor_new_followers(res)
     
 
-
+async def periodic_ping_db():
+    while True:
+        # Пингуем базу данных каждые 5 минут (300 секунд)
+        await asyncio.sleep(300)
+        try:
+            async with connection.cursor() as cursor:
+                await cursor.execute("SELECT 1")
+            await connection.commit()
+        except Exception as e:
+            print(f"Error pinging DB: {e}")
 
 
 # ************************************************************
@@ -199,10 +208,12 @@ async def get_followers3(message: types.Message, state:FSMContext):
     
 
     
-    
 
 
 if __name__ == '__main__':
+    loop = asyncio.get_event_loop()
+    loop.create_task(periodic_ping_db())
+    loop.create_task(periodic_followers_check())
     executor.start_polling(dp, skip_updates=True)
 
 
