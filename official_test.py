@@ -74,7 +74,7 @@ async def followers_checking():
 async def periodic_ping_db():
     while True:
         # Пингуем базу данных каждые 5 минут (300 секунд)
-        await asyncio.sleep(300)
+        await asyncio.sleep(600)
         try:
             async with connection.cursor() as cursor:
                 await cursor.execute("SELECT 1")
