@@ -261,13 +261,15 @@ async def comments_checker3(message: types.Message, state:FSMContext):
     async with state.proxy() as data:
         data['pattern']= message.text
         await bot.send_message(message.from_user.id, "Теперь введите сообщение, которое будет отправлено пользователю")
-        Form.waiting_for_post_message.set()
+        await Form.waiting_for_post_message.set()
 
 @dp.message_handler(state=Form.waiting_for_post_message)
 async def comments_checker4(message: types.Message, state:FSMContext):   
     async with state.proxy() as data:
         data['post_message'] = message.text
         db.update_comments_check(1, data['pattern'], data['post_message'], data['username'], data['pk'])
+        await state.finish()
+        followers_checking()
         
 
 
