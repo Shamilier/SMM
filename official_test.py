@@ -47,11 +47,25 @@ def get_account_action_keyboard():
         InlineKeyboardButton(text="Auto comment", callback_data="auto_comment"),
         InlineKeyboardButton(text="Subscribers checker", callback_data="subscribers_checker"),
         InlineKeyboardButton(text="get_followers", callback_data="get_followers"),
+        InlineKeyboardButton(text="comments_checker", callback_data="comments_checker"),
         
     ]
     keyboard.add(*buttons)
     return keyboard
 
+
+async def periodic_comments_check():
+    while True:
+        # Ждем 8 минут (480 секунд)
+        await asyncio.sleep(480)
+        await comments_checking()
+        
+        
+async def comments_checking():
+    accs = db.get_comments_checking()
+    for i in accs:
+        print(accs)
+        
 
 async def periodic_followers_check():
     while True:
@@ -76,11 +90,23 @@ async def periodic_ping_db():
         # Пингуем базу данных каждые 5 минут (300 секунд)
         await asyncio.sleep(600)
         try:
-            async with connection.cursor() as cursor:
-                await cursor.execute("SELECT 1")
-            await connection.commit()
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT 1")
+            connection.commit()
         except Exception as e:
             print(f"Error pinging DB: {e}")
+
+def check_post_url(url, username, password):
+    try:
+        cl = Client()
+        cl.login(username, password)
+        res= cl.media_pk_from_url(url)
+        print(res)
+        return res
+        
+    except Exception as e:
+        print('smth wrong', e)
+    
 
 
 # ************************************************************
@@ -91,6 +117,9 @@ class Form(StatesGroup):
     waiting_for_greetning = State()
     waiting_for_acc_name_for_checking = State()
     waiting_for_acc_count_for_checking = State()
+    waiting_for_posts_url = State()
+    waiting_for_pattern = State()
+    waiting_for_post_message = State()
     
 @dp.message_handler(commands='accounts')
 async def accs(message: types.Message):
@@ -139,7 +168,7 @@ async def instagram_password_received(message: types.Message, state: FSMContext)
 
     await state.finish()
     
-    
+# -=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-
     
 @dp.callback_query_handler(lambda call: call.data == 'subscribers_checker')
 async def subscribers_checker(call: CallbackQuery):
@@ -162,6 +191,8 @@ async def greetning_recieve(message: types.Message, state: FSMContext):
     db.set_followers_checker(status, message.from_user.id)
     await bot.send_message(message.from_user.id, "Успешно добавлено!")
     await state.finish()
+
+# -=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-
 
 @dp.callback_query_handler(lambda call: call.data == 'get_followers')
 async def get_followers(call: CallbackQuery):
@@ -202,6 +233,45 @@ async def get_followers3(message: types.Message, state:FSMContext):
         await bot.send_document(message.from_user.id, document=bytes_output, caption="Вот список подписчиков в формате CSV.")
 
         await state.finish()
+
+# -=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-
+
+@dp.callback_query_handler(lambda call: call.data == 'comments_checker')
+async def comments_checker1(call: CallbackQuery):
+    await bot.send_message(call.from_user.id, "Эта функция автоматизирует ответы на коментарии под постом. Отправьте ссылку на пост с Вашего аккаунта")
+    await Form.waiting_for_posts_url.set()
+    
+@dp.message_handler(state=Form.waiting_for_posts_url)
+async def comments_checker2(message: types.Message, state:FSMContext):
+    async with state.proxy() as data:
+        data['post_url']= message.text
+        
+        user_id = message.from_user.id
+        res = db.get_username_password(user_id)
+        data['username'] = res['username']
+                
+        pk = check_post_url(message.text, res['username'], res['password'])
+        if pk:
+            data['post_pk'] = pk
+            await bot.send_message(message.from_user.id, "Теперь введите паттерн, на который будет реазировать скрипт")
+            await Form.waiting_for_pattern.set()
+
+@dp.message_handler(state=Form.waiting_for_pattern)
+async def comments_checker3(message: types.Message, state:FSMContext):
+    async with state.proxy() as data:
+        data['pattern']= message.text
+        await bot.send_message(message.from_user.id, "Теперь введите сообщение, которое будет отправлено пользователю")
+        Form.waiting_for_post_message.set()
+
+@dp.message_handler(state=Form.waiting_for_post_message)
+async def comments_checker4(message: types.Message, state:FSMContext):   
+    async with state.proxy() as data:
+        data['post_message'] = message.text
+        db.update_comments_check(1, data['pattern'], data['post_message'], data['username'], data['pk'])
+        
+
+
+        
         
         
     

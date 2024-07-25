@@ -91,5 +91,18 @@ class Database:
         self.cursor.execute(query, (user_id,))
         result = self.cursor.fetchall()
         return result
+# ----------
+    def update_comments_check(self, status, pattern, answer, username, pk):
+        query = "UPDATE inst_accounts SET comments_checker = %s, pattern = %s, answer = %s WHERE username = %s"
+        self.cursor.execute(query, (status, pattern, answer, pk, username))
+        self.connection.commit()
+        return
+        
+# ---------
+    def get_comments_checking(self):
+        query = "SELECT * FROM inst_accounts WHERE comments_checker = %s"
+        self.cursor.execute(query, (1,))
+        result = self.connection.fetchall()
+        return result
         
         

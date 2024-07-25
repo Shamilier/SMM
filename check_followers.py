@@ -27,33 +27,33 @@ def check_followers_from_nickname(username, password, checking_username, amount)
 
 
 
-def monitor_new_followers(res, prev_followers):
-    cl = Client()
-    cl.login(res['username'], res['password'])
+# def monitor_new_followers(res, prev_followers):
+#     cl = Client()
+#     cl.login(res['username'], res['password'])
 
-    # Сначала получаем всех текущих подписчиков
-    previous_followers = set()
-    last_max_id = ""
+#     # Сначала получаем всех текущих подписчиков
+#     previous_followers = set()
+#     last_max_id = ""
 
-    try:
-        while True:
-            new_followers, last_max_id = cl.user_followers_v1_chunk(inst_acc_id, max_amount=50, max_id=last_max_id)
-            current_followers = {(follower.pk, follower.username) for follower in new_followers}
-            previous_followers.update(current_followers)
+#     try:
+#         while True:
+#             new_followers, last_max_id = cl.user_followers_v1_chunk(inst_acc_id, max_amount=50, max_id=last_max_id)
+#             current_followers = {(follower.pk, follower.username) for follower in new_followers}
+#             previous_followers.update(current_followers)
             
-            if not last_max_id:  # Конец списка, все подписчики загружены
-                print("Все текущие подписчики получены.")
-                break
-            else:
-                print("Загрузка подписчиков...")
-                time.sleep(3)
+#             if not last_max_id:  # Конец списка, все подписчики загружены
+#                 print("Все текущие подписчики получены.")
+#                 break
+#             else:
+#                 print("Загрузка подписчиков...")
+#                 time.sleep(3)
 
-        # Время задержки для следующего запроса
-        sleep_time = random.randint(delay-60, delay+60)
-        print(f"Следующая проверка через {sleep_time} секунд.")
-        time.sleep(sleep_time)
+#         # Время задержки для следующего запроса
+#         sleep_time = random.randint(delay-60, delay+60)
+#         print(f"Следующая проверка через {sleep_time} секунд.")
+#         time.sleep(sleep_time)
 
-    except Exception as e:
-        print(f"Произошла ошибка: {e}")
-        time.sleep(300)
+#     except Exception as e:
+#         print(f"Произошла ошибка: {e}")
+#         time.sleep(300)
         
