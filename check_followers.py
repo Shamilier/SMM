@@ -29,8 +29,8 @@ def check_comments(i: dict):
     cl = Client()
     print(i['username'], i['password'])
     try:
-        cl.login(i['username'], i['password'])
-        print(cl.media_info_a1(int(i['pk'])))
+        cl.login(i['username'].lower(), i['password'])
+        print(cl.media_info(int(i['pk'])))
     except Exception as e:
         print(e)
 

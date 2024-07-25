@@ -4,6 +4,7 @@ import random
 from instagrapi import Client
 
 cl = Client()
-cl.login("space_phone__", "Shoma228!")
+cl.login("Space_phone__", "Shoma228!")
 
-print(cl.account_info())
+
+print(cl.media_info(3419916207215186534))
