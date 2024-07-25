@@ -57,7 +57,7 @@ def get_account_action_keyboard():
 async def periodic_comments_check():
     while True:
         # Ждем 8 минут (480 секунд)
-        await asyncio.sleep(480)
+        await asyncio.sleep(5)
         await comments_checking()
         
         
@@ -289,6 +289,7 @@ if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     loop.create_task(periodic_ping_db())
     loop.create_task(periodic_followers_check())
+    loop.create_task(periodic_comments_check())
     executor.start_polling(dp, skip_updates=True)
 
 
