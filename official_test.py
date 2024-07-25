@@ -14,7 +14,7 @@ from key_words_in_DM import monitor_direct_messages, keywords
 from connection_db import connection
 from db import Database
 from secret import API_TOKEN
-from check_followers import  get_prev_followers, monitor_new_followers, check_followers_from_nickname
+from check_followers import  get_prev_followers, check_followers_from_nickname
 
 
 bot = Bot(token=API_TOKEN)
