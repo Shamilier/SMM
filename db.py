@@ -94,7 +94,7 @@ class Database:
 # ----------
     def update_comments_check(self, status, pattern, answer, username, pk):
         query = "UPDATE inst_accounts SET comments_checker = %s, pattern = %s, answer = %s WHERE username = %s"
-        self.cursor.execute(query, (status, pattern, answer, pk, username))
+        self.cursor.execute(query, (status, pattern, answer, username))
         self.connection.commit()
         return
         
