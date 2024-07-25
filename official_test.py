@@ -267,7 +267,7 @@ async def comments_checker3(message: types.Message, state:FSMContext):
 async def comments_checker4(message: types.Message, state:FSMContext):   
     async with state.proxy() as data:
         data['post_message'] = message.text
-        db.update_comments_check(1, data['pattern'], data['post_message'], data['username'], data['pk'])
+        db.update_comments_check(1, data['pattern'], data['post_message'], data['username'], data['post_pk'])
         await state.finish()
         followers_checking()
         
