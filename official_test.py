@@ -14,7 +14,7 @@ from key_words_in_DM import monitor_direct_messages, keywords
 from connection_db import connection
 from db import Database
 from secret import API_TOKEN
-from check_followers import  get_prev_followers, check_followers_from_nickname
+from check_followers import  get_prev_followers, check_followers_from_nickname, check_comments
 
 
 bot = Bot(token=API_TOKEN)
@@ -64,7 +64,8 @@ async def periodic_comments_check():
 async def comments_checking():
     accs = db.get_comments_checking()
     for i in accs:
-        print(accs)
+        check_comments(i)
+        
         
 
 async def periodic_followers_check():
@@ -249,6 +250,8 @@ async def comments_checker2(message: types.Message, state:FSMContext):
         user_id = message.from_user.id
         res = db.get_username_password(user_id)
         data['username'] = res['username']
+        data['password'] = res['password']
+        data['inst_acc_id'] = res['inst_acc_id']
                 
         pk = check_post_url(message.text, res['username'], res['password'])
         if pk:
@@ -267,7 +270,7 @@ async def comments_checker3(message: types.Message, state:FSMContext):
 async def comments_checker4(message: types.Message, state:FSMContext):   
     async with state.proxy() as data:
         data['post_message'] = message.text
-        db.update_comments_check(1, data['pattern'], data['post_message'], data['username'], data['post_pk'])
+        db.update_comments_check(data['inst_acc_id'], data['username'], data['password'], data['pattern'], data['post_message'], data['post_pk'])
         await state.finish()
         followers_checking()
         

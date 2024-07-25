@@ -25,7 +25,10 @@ def check_followers_from_nickname(username, password, checking_username, amount)
         followers = cl.user_followers(int(inst_acc_id), amount=int(amount))
     return followers
 
-
+def check_comments(i: dict):
+    cl = Client()
+    cl.login(i['username'], i['password'])
+    print(cl.media_info_a1(i['pk']))
 
 # def monitor_new_followers(res, prev_followers):
 #     cl = Client()

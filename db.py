@@ -81,7 +81,7 @@ class Database:
 
 # ----------
     def get_followers_check_list(self):
-        query = 'SELECT * FROM inst_accounts WHERE followers_checker = %s'
+        query = 'SELECT * FROM comments_check'
         self.cursor.execute(query, (1,))
         result = self.cursor.fetchall()
         return result
@@ -92,9 +92,9 @@ class Database:
         result = self.cursor.fetchall()
         return result
 # ----------
-    def update_comments_check(self, status, pattern, answer, username, pk):
-        query = "UPDATE inst_accounts SET comments_checker = %s, pattern = %s, answer = %s WHERE username = %s"
-        self.cursor.execute(query, (status, pattern, answer, username))
+    def update_comments_check(self, inst_acc_id, username, password, pattern, answer, pk):
+        query = "INSERT INTO comments_check (inst_acc_id, username, password, pattern, answer, pk) VALUES (%s, %s, %s, %s, %s, %s)"
+        self.cursor.execute(query, (inst_acc_id, username, password, pattern, answer, pk))
         self.connection.commit()
         return
         
