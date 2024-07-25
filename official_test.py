@@ -57,7 +57,7 @@ def get_account_action_keyboard():
 async def periodic_comments_check():
     while True:
         # Ждем 8 минут (480 секунд)
-        await asyncio.sleep(5)
+        await asyncio.sleep(600)
         await comments_checking()
         
         

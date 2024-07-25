@@ -83,14 +83,22 @@ class Database:
     def get_followers_check_list(self):
         query = 'SELECT * FROM inst_accounts WHERE followers_checker = %s'
         self.cursor.execute(query, (1,))
-        result = self.cursor.fetchall()
-        return result
+        try:
+            result = self.cursor.fetchall()
+            return result
+        except Exception as e:
+            print(e, 'smth wrong get_followers_check_list, db')
+            return []
 # ----------
     def get_prev_followers(self, user_id):
         query = "SELECT * FROM followers WHERE owner_id = %s"
         self.cursor.execute(query, (user_id,))
-        result = self.cursor.fetchall()
-        return result
+        try:
+            result = self.cursor.fetchall()
+            return result
+        except Exception as e:
+            print(e, 'smth wrong get_followers_check_list, db')
+            return []
 # ----------
     def update_comments_check(self, inst_acc_id, username, password, pattern, answer, pk):
         query = "INSERT INTO comments_check (inst_acc_id, username, password, pattern, answer, pk) VALUES (%s, %s, %s, %s, %s, %s)"
@@ -102,7 +110,10 @@ class Database:
     def get_comments_checking(self):
         query = "SELECT * FROM comments_check"
         self.cursor.execute(query)
-        result = self.cursor.fetchall()
-        return result
-        
+        try:
+            result = self.cursor.fetchall()
+            return result
+        except Exception as e:
+            print(e, 'smth wrong get_followers_check_list, db')
+            return []
         
