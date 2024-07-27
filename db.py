@@ -4,7 +4,6 @@ from mysql.connector import Error
 class Database:
     def __init__(self, connection):
         self.connection = connection
-        self.cursor = self.connection.cursor(dictionary=True)
 # ----------
     def add_user_if_not_exists(self, user_id):
         '''
